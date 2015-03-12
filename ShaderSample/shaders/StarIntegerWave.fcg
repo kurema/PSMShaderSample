@@ -1,0 +1,48 @@
+
+void main( float2 in v_TexCoord     : TEXCOORD0,
+           float4 out Color : COLOR,
+           uniform float4 StarColor,
+           uniform float4 BgColor,
+           uniform int OffsetX,
+           uniform int OffsetY,
+           uniform float Possibility,
+           uniform int Seed,
+           uniform float2 WaveCoord,
+           uniform float WaveSpeed,
+           uniform float WaveTime,
+           uniform float WaveScale,
+           uniform float WaveFrequency,
+           uniform float WaveLastTime)
+{
+	float WaveDistance=sqrt((WaveCoord.x-v_TexCoord.x)*(WaveCoord.x-v_TexCoord.x)
+		+(WaveCoord.y-v_TexCoord.y)*(WaveCoord.y-v_TexCoord.y));
+	float WaveX,WaveY;
+	if(WaveTime>0 && WaveDistance<WaveSpeed*WaveTime && (WaveTime-WaveDistance/WaveSpeed)<WaveLastTime){
+		WaveX=(WaveCoord.x-v_TexCoord.x)/WaveDistance*WaveScale*sin((WaveDistance/WaveSpeed-WaveTime)*3.1415926*2/WaveFrequency)*
+			(1-(WaveTime-WaveDistance/WaveSpeed)/WaveLastTime);
+		WaveY=(WaveCoord.y-v_TexCoord.y)/WaveDistance*WaveScale*sin((WaveDistance/WaveSpeed-WaveTime)*3.1415926*2/WaveFrequency)*
+			(1-(WaveTime-WaveDistance/WaveSpeed)/WaveLastTime);
+	}else{
+		WaveX=WaveY=0;
+	}
+	
+	unsigned int randx=((int)v_TexCoord.x+OffsetX+(int)WaveX)^Seed;
+	unsigned int randy=((int)v_TexCoord.y+OffsetY+(int)WaveY)^Seed;
+	unsigned int randz=Seed;
+	for(int i=0;i<3;i++){
+		//1259,673,1373
+		//103733951,247629013,599144041
+		randx=(randx*randx)^randz^103733951;
+		randy=(randy*randy)^randx^247629013;
+		randz=(randz*randz)^randy^599144041;
+	}
+	randx=(randx^randy^randz);
+	randy=(randx & 255);
+	randx=randx>>16;
+
+	if(randx<=65536*Possibility && randx>=-65536*Possibility){
+		Color=StarColor*randy/255.0f+BgColor*(255.0f-randy)/255.0f;
+	}else{
+		Color=BgColor;
+	}
+}

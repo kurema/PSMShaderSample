@@ -1,0 +1,30 @@
+
+void main( float2 in v_TexCoord     : TEXCOORD0,
+           float4 out Color : COLOR,
+           uniform float4 StarColor,
+           uniform float4 BgColor,
+           uniform float OffsetX,
+           uniform float OffsetY,
+           uniform float Possibility,
+           uniform float Seed)
+{
+	float randx=floor(v_TexCoord.x+OffsetX);
+	float randy=floor(v_TexCoord.y+OffsetY);
+	float randz=Seed+1;
+	for(int i=0;i<30;i++){
+		randx=fmod(pow(randx,2)+1259,2047);
+		randy=fmod(pow(randy,2)+673,2047);
+		randz=fmod(pow(randz,2)+1373,2047);
+	}
+	//randx=randx+randy;
+	randx=(randx+randy+randz);
+	randy=fmod(randx,256);
+	//randx=fmod(randx,100000);
+
+	if(randx<=100000.0f*Possibility){
+		Color=StarColor*randy/255.0f+BgColor*(255.0f-randy)/255.0f;
+//		Color=StarColor;
+	}else{
+		Color=BgColor;
+	}
+}

@@ -1,0 +1,37 @@
+
+void main( float2 in  v_TexCoord     : TEXCOORD0,
+           float4 out Color : COLOR,
+           uniform float4 BackGroundColor,
+           uniform float4 BulletColor,
+           uniform float4 BulletColorCenter ,
+           uniform float EllapsedTime,
+           uniform float2 ExplosionPoint,
+           uniform float BulletSize,
+           uniform float BulletSpeed,
+           uniform float BulletRotationSpeed,
+           uniform int BulletCount,
+           uniform float RepeatTime,
+           uniform float RepeatRotationDifference,
+           uniform int RepeatCountLimit)
+{
+	Color = BackGroundColor;
+	
+	float Distance=sqrt((v_TexCoord.x-ExplosionPoint.x)*(v_TexCoord.x-ExplosionPoint.x)+(v_TexCoord.y-ExplosionPoint.y)*(v_TexCoord.y-ExplosionPoint.y));
+	float Rotation=atan((v_TexCoord.y-ExplosionPoint.y)/(v_TexCoord.x-ExplosionPoint.x))+(3.1415926*step(v_TexCoord.x-ExplosionPoint.x,0));
+	if(Distance<BulletSpeed*EllapsedTime+BulletSize){
+		float RotationRep=3.1415926*2/BulletCount;
+		int RepeatCount=(BulletSpeed*EllapsedTime-Distance+RepeatTime*BulletSpeed/2)/(RepeatTime*BulletSpeed);
+		if(RepeatCountLimit==-1 || RepeatCount<RepeatCountLimit){
+			float TargetRotation=floor((Rotation-BulletRotationSpeed*EllapsedTime-RepeatRotationDifference*RepeatCount)/RotationRep)
+				*RotationRep+RotationRep/2+BulletRotationSpeed*EllapsedTime+RepeatRotationDifference*RepeatCount;
+			float TargetDistance=BulletSpeed*EllapsedTime-Distance+RepeatTime*BulletSpeed/2-RepeatCount*RepeatTime*BulletSpeed+Distance-RepeatTime*BulletSpeed/2;
+			float BulletDistance=sqrt(pow((v_TexCoord.x-ExplosionPoint.x-TargetDistance*cos(TargetRotation)),2.0f)+
+				pow((v_TexCoord.y-ExplosionPoint.y-TargetDistance*sin(TargetRotation)),2.0f));
+			if(BulletDistance<BulletSize){
+			float BulletColorRate=1.0f-pow(1.0f-BulletDistance/BulletSize,2);
+			Color=BulletColor*BulletColorRate+BulletColorCenter*(1-BulletColorRate);
+			}
+		}
+	}
+	
+}

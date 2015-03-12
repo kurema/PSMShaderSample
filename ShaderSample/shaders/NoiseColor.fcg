@@ -1,0 +1,24 @@
+
+void main( float2 in v_TexCoord     : TEXCOORD0,
+           float4 out Color : COLOR,
+           uniform int Time,
+           uniform int Seed)
+{
+	unsigned int randz=Seed+Time+505885997;
+	unsigned int randx=floor(v_TexCoord.x+3+Time);
+	unsigned int randy=floor(v_TexCoord.y+7+Time);
+	for(int i=0;i<3;i++){
+		//1259,673,1373
+		randx=randx*randz^121499449;
+		randy=randy*randx^247629013;
+		randz=randz*randy^599144041;
+	}
+	randx=(randx^randy^randz);
+	
+	Color.x=((randx>>8)&255)/255.0f;
+//	Color.y=((randx>>8)&255)/255.0f;
+//	Color.z=((randx>>8)&255)/255.0f;
+	Color.y=((randx>>16)&255)/255.0f;
+	Color.z=((randx>>24)&255)/255.0f;
+	Color.w=1.0f;
+}

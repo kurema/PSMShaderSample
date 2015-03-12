@@ -1,0 +1,30 @@
+
+void main( float2 in  v_TexCoord     : TEXCOORD0,
+           float4 out Color : COLOR,
+           uniform float4 BackGroundColor,
+           uniform float4 BulletColor,
+           uniform float4 BulletColorCenter ,
+           uniform float EllapsedTime,
+           uniform float2 ExplosionPoint,
+           uniform float BulletSize,
+           uniform float BulletSpeed,
+           uniform float BulletRotationSpeed,
+           uniform int BulletCount )
+{
+	Color = BackGroundColor;
+	
+	float Distance=sqrt((v_TexCoord.x-ExplosionPoint.x)*(v_TexCoord.x-ExplosionPoint.x)+(v_TexCoord.y-ExplosionPoint.y)*(v_TexCoord.y-ExplosionPoint.y));
+	float Rotation=atan((v_TexCoord.y-ExplosionPoint.y)/(v_TexCoord.x-ExplosionPoint.x))+(3.1415926*step(v_TexCoord.x-ExplosionPoint.x,0));
+	if(abs(Distance-BulletSpeed*EllapsedTime)<BulletSize){
+		float RotationRep=3.1415926*2/BulletCount;
+		float TargetRotation=floor((Rotation-BulletRotationSpeed*EllapsedTime)/RotationRep)*RotationRep+RotationRep/2+BulletRotationSpeed*EllapsedTime;
+		float TargetDistance=BulletSpeed*EllapsedTime;
+		float BulletDistance=sqrt(pow((v_TexCoord.x-ExplosionPoint.x-TargetDistance*cos(TargetRotation)),2.0f)+
+			pow((v_TexCoord.y-ExplosionPoint.y-TargetDistance*sin(TargetRotation)),2.0f));
+		if(BulletDistance<BulletSize){
+			Color=BulletColor*(BulletDistance/BulletSize)+BulletColorCenter*(1.0f-BulletDistance/BulletSize);
+//			Color.w=BulletColor.w*(BulletDistance/BulletSize)+BulletColorCenter.w*(1-BulletDistance/BulletSize);
+		}
+	}
+	
+}

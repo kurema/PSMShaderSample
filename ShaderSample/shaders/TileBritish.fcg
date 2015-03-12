@@ -1,0 +1,19 @@
+
+void main( float2 in  v_TexCoord     : TEXCOORD0,
+           float4 out Color : COLOR,
+           uniform float4 TileColor,
+           uniform float4 JointColor,
+           uniform float2 TileSize,
+           uniform float2 JointSize
+            )
+{
+	if(fmod(v_TexCoord.y,TileSize.y)<JointSize.y){
+		Color = JointColor;
+	}else{
+		if(fmod(step(1,fmod(v_TexCoord.y/TileSize.y,2))*TileSize.x+v_TexCoord.x,TileSize.x*2)<JointSize.x){
+			Color = JointColor;
+		}else{
+			Color = TileColor;
+		}
+	}
+}
