@@ -11,8 +11,5 @@
 > A：問題ありません。
 
 https://ja-support.psm.playstation.net/app/answers/detail/a_id/342
-
-半分以上はサンプルコードのままだった気もしますが、まぁ大丈夫でしょう。
 ## ライセンス
-少なくともShaderSample/shadersの中身はMITライセンスです。
-その他の扱いは良く分かりません。
+MITライセンスです。
