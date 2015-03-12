@@ -10,7 +10,7 @@
 > Q：自分で開発したPSMアプリケーションのソースコードを配布しても良いですか？  
 > A：問題ありません。
 
-http://qiita.com/nariya/items/97afba6b7b448920cdf0
+https://ja-support.psm.playstation.net/app/answers/detail/a_id/342
 
 半分以上はサンプルコードのままだった気もしますが、まぁ大丈夫でしょう。
 ## ライセンス
